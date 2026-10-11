@@ -1,0 +1,505 @@
+--[[
+    🥭 MANGOLOVERS HUB
+    Mango Orange - More Transparent
+    Discord/Doggywoof8thaccphone
+
+    BUTTONS:
+    1 = DropKick
+    2 = InvicibleFly
+    3 = InfYield
+    4 = AjaanHub
+    5 = MM2HUB
+    6 = RblxCSGO
+    7 = Monochrome
+    8 = Novoline
+]]
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+-- ============================================
+-- UI STATE
+-- ============================================
+
+local uiVisible = true
+local screenGui = nil
+local mangoButton = nil
+
+-- ============================================
+-- DISCORD LINK
+-- ============================================
+
+local DISCORD_INVITE = "https://discord.gg/JfR8eTpSS"
+
+-- ============================================
+-- SCRIPT LOADERS
+-- ============================================
+
+local function loadDropKick()
+    print("🦶 Loading DropKick...")
+    pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/platinww/CrustyMain/refs/heads/main/universal/DropKick.lua"))()
+    end)
+end
+
+local function loadInvicibleFly()
+    print("🪁 Loading InvicibleFly...")
+    local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+    local url = isMobile and "https://raw.githubusercontent.com/396abc/Script/refs/heads/main/MobileFly.lua" or "https://raw.githubusercontent.com/396abc/Script/refs/heads/main/FlyR15.lua"
+    pcall(function()
+        loadstring(game:HttpGet(url))()
+    end)
+end
+
+local function loadInfYield()
+    print("🛡️ Loading Infinite Yield...")
+    pcall(function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end)
+end
+
+local function loadAjaanHub()
+    print("🌀 Loading AjaanHub...")
+    pcall(function()
+        loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/359e97f8618e9008afe5f496184ebb7c.lua"))()
+    end)
+end
+
+local function loadMM2HUB()
+    print("🔪 Loading MM2HUB...")
+    pcall(function()
+        loadstring(game:HttpGet('https://raw.smokingscripts.org/vertex.lua'))()
+    end)
+end
+
+local function loadRblxCSGO()
+    print("🔫 Loading RblxCSGO...")
+    pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nickk-GG/BloxStrike-NickHub-New-Gen/refs/heads/main/sc.lua"))()
+    end)
+end
+
+local function loadMonochrome()
+    print("⚫ Loading Monochrome...")
+    pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/kokoboycool8-cpu/MONOCHROME-SCRIPT-V1/refs/heads/main/monochrome%20v1.5-o"))()
+    end)
+end
+
+local function loadNovoline()
+    print("🌙 Loading Novoline...")
+    pcall(function()
+        loadstring(game:HttpGet("https://novoline.pro/"))()
+    end)
+end
+
+-- ============================================
+-- DISCORD FUNCTION
+-- ============================================
+
+local function openDiscord()
+    print("💬 Opening Discord: " .. DISCORD_INVITE)
+    local success, err = pcall(function()
+        setclipboard(DISCORD_INVITE)
+    end)
+    if success then
+        print("📋 Link copied to clipboard!")
+    end
+    print("📋 Paste this in your browser: " .. DISCORD_INVITE)
+end
+
+-- ============================================
+-- CREATE MANGO TOGGLE BUTTON (DRAGGABLE - TOP)
+-- ============================================
+
+local function createMangoToggle()
+    local toggleGui = Instance.new("ScreenGui")
+    toggleGui.Name = "MangoToggle"
+    toggleGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    toggleGui.ResetOnSpawn = false
+    toggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    local toggleFrame = Instance.new("Frame")
+    toggleFrame.Size = UDim2.new(0, 50, 0, 50)
+    toggleFrame.Position = UDim2.new(0.5, -25, 0, 10)
+    toggleFrame.BackgroundColor3 = Color3.fromRGB(255, 170, 50)
+    toggleFrame.BackgroundTransparency = 0.2
+    toggleFrame.BorderSizePixel = 2
+    toggleFrame.BorderColor3 = Color3.fromRGB(255, 190, 100)
+    toggleFrame.Parent = toggleGui
+
+    local toggleCorner = Instance.new("UICorner")
+    toggleCorner.CornerRadius = UDim.new(0, 12)
+    toggleCorner.Parent = toggleFrame
+
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(1, 0, 1, 0)
+    toggleButton.BackgroundTransparency = 1
+    toggleButton.Text = "🥭"
+    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.TextSize = 28
+    toggleButton.Font = Enum.Font.GothamBold
+    toggleButton.Parent = toggleFrame
+
+    -- DRAG LOGIC (works on PC)
+    local dragData = {
+        dragging = false,
+        startPos = nil,
+        startMouse = nil,
+        moved = false,
+    }
+
+    local function startDrag(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragData.startMouse = input.Position
+            dragData.startPos = toggleFrame.Position
+            dragData.moved = false
+            dragData.dragging = true
+        end
+    end
+
+    local function updateDrag(input)
+        if dragData.dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragData.startMouse
+            if delta.Magnitude > 5 then
+                dragData.moved = true
+            end
+            if dragData.moved then
+                toggleFrame.Position = UDim2.new(
+                    dragData.startPos.X.Scale,
+                    dragData.startPos.X.Offset + delta.X,
+                    dragData.startPos.Y.Scale,
+                    dragData.startPos.Y.Offset + delta.Y
+                )
+            end
+        end
+    end
+
+    local function endDrag(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if dragData.dragging and not dragData.moved then
+                if screenGui then
+                    uiVisible = not uiVisible
+                    screenGui.Enabled = uiVisible
+                    print(uiVisible and "🟢 UI Shown" or "🔴 UI Hidden")
+                end
+            end
+            dragData.dragging = false
+            dragData.moved = false
+        end
+    end
+
+    toggleButton.InputBegan:Connect(startDrag)
+    UserInputService.InputChanged:Connect(updateDrag)
+    UserInputService.InputEnded:Connect(endDrag)
+    toggleFrame.InputBegan:Connect(startDrag)
+
+    return toggleGui
+end
+
+-- ============================================
+-- CREATE UI
+-- ============================================
+
+local function createUI()
+    screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "CustomUI"
+    screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    screenGui.ResetOnSpawn = false
+    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 700, 0, 320)
+    mainFrame.Position = UDim2.new(0, 0, 0.5, -160)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(255, 170, 50)
+    mainFrame.BackgroundTransparency = 0.5
+    mainFrame.BorderSizePixel = 1
+    mainFrame.BorderColor3 = Color3.fromRGB(255, 190, 100)
+    mainFrame.ClipsDescendants = true
+    mainFrame.Parent = screenGui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 16)
+    corner.Parent = mainFrame
+
+    local glow = Instance.new("Frame")
+    glow.Size = UDim2.new(1, 4, 1, 4)
+    glow.Position = UDim2.new(0, -2, 0, -2)
+    glow.BackgroundColor3 = Color3.fromRGB(255, 170, 50)
+    glow.BackgroundTransparency = 0.75
+    glow.BorderSizePixel = 0
+    glow.ZIndex = 0
+    glow.Parent = mainFrame
+
+    local glowCorner = Instance.new("UICorner")
+    glowCorner.CornerRadius = UDim.new(0, 18)
+    glowCorner.Parent = glow
+
+    local titleBar = Instance.new("Frame")
+    titleBar.Size = UDim2.new(1, 0, 0, 35)
+    titleBar.BackgroundColor3 = Color3.fromRGB(255, 180, 70)
+    titleBar.BackgroundTransparency = 0.5
+    titleBar.Parent = mainFrame
+
+    local titleCorner = Instance.new("UICorner")
+    titleCorner.CornerRadius = UDim.new(0, 16)
+    titleCorner.Parent = titleBar
+
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(0.35, 0, 1, 0)
+    title.Position = UDim2.new(0, 12, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "🥭 Mangolovers Hub"
+    title.TextColor3 = Color3.fromRGB(0, 0, 0)
+    title.TextSize = 18
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Font = Enum.Font.GothamBold
+    title.Parent = titleBar
+
+    local discordTag = Instance.new("TextButton")
+    discordTag.Size = UDim2.new(0.35, 0, 1, 0)
+    discordTag.Position = UDim2.new(0.40, 0, 0, 0)
+    discordTag.BackgroundTransparency = 1
+    discordTag.Text = "Discord/Doggywoof8thaccphone"
+    discordTag.TextColor3 = Color3.fromRGB(0, 0, 0)
+    discordTag.TextSize = 14
+    discordTag.TextXAlignment = Enum.TextXAlignment.Left
+    discordTag.Font = Enum.Font.GothamBold
+    discordTag.Parent = titleBar
+
+    discordTag.MouseButton1Click:Connect(openDiscord)
+
+    local closeBtn = Instance.new("TextButton")
+    closeBtn.Size = UDim2.new(0, 30, 0, 30)
+    closeBtn.Position = UDim2.new(1, -38, 0, 3)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(200, 100, 30)
+    closeBtn.BackgroundTransparency = 0.4
+    closeBtn.Text = "X"
+    closeBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+    closeBtn.TextSize = 18
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.Parent = titleBar
+
+    local closeCorner = Instance.new("UICorner")
+    closeCorner.CornerRadius = UDim.new(0, 8)
+    closeCorner.Parent = closeBtn
+
+    closeBtn.MouseButton1Click:Connect(function()
+        uiVisible = false
+        screenGui.Enabled = false
+        print("🔴 UI Closed (click mango 🥭 to reopen)")
+    end)
+
+    -- ============================================
+    -- BUTTONS
+    -- ============================================
+
+    local buttonWidth = 0.17
+    local buttonHeight = 38
+    local spacingX = 0.025
+    local spacingY = 8
+    local startX = 0.025
+    local startY = 48
+
+    local buttons = {}
+    local textBox = nil
+    local dropKickButton = nil
+    local invicibleFlyButton = nil
+    local infYieldButton = nil
+    local ajaanHubButton = nil
+    local mm2HubButton = nil
+    local rblxCSGOButton = nil
+    local monochromeButton = nil
+    local novolineButton = nil
+
+    local function createButton(text, xPos, yPos)
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(buttonWidth, 0, 0, buttonHeight)
+        btn.Position = UDim2.new(xPos, 0, 0, yPos)
+        btn.BackgroundColor3 = Color3.fromRGB(255, 180, 80)
+        btn.BackgroundTransparency = 0.45
+        btn.Text = text
+        btn.TextColor3 = Color3.fromRGB(0, 0, 0)
+        btn.TextSize = 13
+        btn.Font = Enum.Font.GothamBold
+        btn.Parent = mainFrame
+
+        local btnCorner = Instance.new("UICorner")
+        btnCorner.CornerRadius = UDim.new(0, 8)
+        btnCorner.Parent = btn
+
+        btn.MouseEnter:Connect(function()
+            btn.BackgroundTransparency = 0.25
+            btn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
+        end)
+        btn.MouseLeave:Connect(function()
+            btn.BackgroundTransparency = 0.45
+            btn.BackgroundColor3 = Color3.fromRGB(255, 180, 80)
+        end)
+
+        return btn
+    end
+
+    -- ROW 1
+    dropKickButton = createButton("DropKick", startX, startY)
+    table.insert(buttons, dropKickButton)
+
+    invicibleFlyButton = createButton("InvicibleFly", startX + (buttonWidth + spacingX), startY)
+    table.insert(buttons, invicibleFlyButton)
+
+    infYieldButton = createButton("InfYield", startX + (buttonWidth + spacingX) * 2, startY)
+    table.insert(buttons, infYieldButton)
+
+    ajaanHubButton = createButton("AjaanHub", startX + (buttonWidth + spacingX) * 3, startY)
+    table.insert(buttons, ajaanHubButton)
+
+    mm2HubButton = createButton("MM2HUB", startX + (buttonWidth + spacingX) * 4, startY)
+    table.insert(buttons, mm2HubButton)
+
+    -- ROW 2
+    local row2Y = startY + buttonHeight + spacingY
+
+    rblxCSGOButton = createButton("RblxCSGO", startX, row2Y)
+    table.insert(buttons, rblxCSGOButton)
+
+    textBox = Instance.new("TextBox")
+    textBox.Size = UDim2.new(buttonWidth * 2 + spacingX, 0, 0, buttonHeight)
+    textBox.Position = UDim2.new(startX + (buttonWidth + spacingX), 0, 0, row2Y)
+    textBox.BackgroundColor3 = Color3.fromRGB(255, 200, 120)
+    textBox.BackgroundTransparency = 0.55
+    textBox.Text = ""
+    textBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+    textBox.TextSize = 14
+    textBox.Font = Enum.Font.Gotham
+    textBox.PlaceholderText = "Enter text..."
+    textBox.PlaceholderColor3 = Color3.fromRGB(80, 60, 30)
+    textBox.ClearTextOnFocus = false
+    textBox.Parent = mainFrame
+
+    local textBoxCorner = Instance.new("UICorner")
+    textBoxCorner.CornerRadius = UDim.new(0, 8)
+    textBoxCorner.Parent = textBox
+
+    textBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            textBox.Text = ""
+            textBox.PlaceholderText = "Enter text..."
+        end
+    end)
+
+    monochromeButton = createButton("Monochrome", startX + (buttonWidth + spacingX) * 3, row2Y)
+    table.insert(buttons, monochromeButton)
+
+    novolineButton = createButton("Novoline", startX + (buttonWidth + spacingX) * 4, row2Y)
+    table.insert(buttons, novolineButton)
+
+    -- ROW 3-5 (unchanged)
+    for row = 2, 4 do
+        for col = 0, 4 do
+            local xPos = startX + col * (buttonWidth + spacingX)
+            local yPos = startY + row * (buttonHeight + spacingY)
+            local num = row * 5 + col + 1
+            local btn = createButton("Btn " .. num, xPos, yPos)
+            table.insert(buttons, btn)
+        end
+    end
+
+    -- ============================================
+    -- BUTTON CLICKS
+    -- ============================================
+
+    dropKickButton.MouseButton1Click:Connect(loadDropKick)
+    invicibleFlyButton.MouseButton1Click:Connect(loadInvicibleFly)
+    infYieldButton.MouseButton1Click:Connect(loadInfYield)
+    ajaanHubButton.MouseButton1Click:Connect(loadAjaanHub)
+    mm2HubButton.MouseButton1Click:Connect(loadMM2HUB)
+    rblxCSGOButton.MouseButton1Click:Connect(loadRblxCSGO)
+    monochromeButton.MouseButton1Click:Connect(loadMonochrome)
+    novolineButton.MouseButton1Click:Connect(loadNovoline)
+
+    for i, btn in ipairs(buttons) do
+        if btn ~= dropKickButton and btn ~= invicibleFlyButton and btn ~= infYieldButton and btn ~= ajaanHubButton and btn ~= mm2HubButton and btn ~= rblxCSGOButton and btn ~= monochromeButton and btn ~= novolineButton then
+            btn.MouseButton1Click:Connect(function()
+                local text = textBox.Text or ""
+                print("🔘 Button " .. i .. " clicked! | Text: " .. text)
+            end)
+        end
+    end
+
+    -- ============================================
+    -- DRAGGABLE (Main UI)
+    -- ============================================
+
+    local function makeDraggable(frame)
+        local drag = false
+        local dragStart, startPos
+
+        frame.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                drag = true
+                dragStart = input.Position
+                startPos = mainFrame.Position
+            end
+        end)
+
+        frame.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                drag = false
+            end
+        end)
+
+        UserInputService.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement and drag then
+                local delta = input.Position - dragStart
+                mainFrame.Position = UDim2.new(
+                    startPos.X.Scale,
+                    startPos.X.Offset + delta.X,
+                    startPos.Y.Scale,
+                    startPos.Y.Offset + delta.Y
+                )
+            end
+        end)
+    end
+
+    makeDraggable(titleBar)
+
+    return screenGui
+end
+
+-- ============================================
+-- LOAD UI
+-- ============================================
+
+mangoButton = createMangoToggle()
+ui = createUI()
+
+-- ============================================
+-- TOGGLE WITH RIGHT SHIFT
+-- ============================================
+
+UserInputService.InputBegan:Connect(function(input, processed)
+    if processed then return end
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        uiVisible = not uiVisible
+        ui.Enabled = uiVisible
+        print(uiVisible and "🟢 UI Shown" or "🔴 UI Hidden")
+    end
+end)
+
+print("✅ 🥭 Mangolovers Hub Loaded!")
+print("📱 Discord/Doggywoof8thaccphone")
+print("🥭 Click and DRAG the mango 🥭 button to move it anywhere!")
+print("🥭 Click (without dragging) to toggle UI on/off")
+print("")
+print("📋 BUTTONS:")
+print("🦶 Button 1 = DropKick")
+print("🪁 Button 2 = InvicibleFly")
+print("🛡️ Button 3 = InfYield")
+print("🌀 Button 4 = AjaanHub")
+print("🔪 Button 5 = MM2HUB")
+print("🔫 Button 6 = RblxCSGO")
+print("⚫ Button 7 = Monochrome")
+print("🌙 Button 8 = Novoline")
+print("🔘 23 buttons ready!")
